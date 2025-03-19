@@ -19,11 +19,11 @@ jobs:
 
       - name: Copy project files to EC2
         run: |
-          rsync -avz --exclude '.git' ./ubuntu@${{secrets.EC2_HOST_IP}}:/home/unbuntu/docker_project
+          rsync -avz --exclude '.git' ./ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project
 
       - name: Docker Compose down and rm
         run: |
-          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/unbuntu/docker_project "
+          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project "
           cd /home/ubuntu/docker_project &&
           docker-compose down &&
           docker rm $(docker ps -aq)
@@ -31,7 +31,7 @@ jobs:
 
       - name: Docker Compose up
         run: |
-          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/unbuntu/docker_project "
+          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project "
           cd /home/ubuntu/docker_project &&
           docker-compose up -d --build
           "
