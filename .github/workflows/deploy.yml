@@ -4,35 +4,33 @@ on:
   push:
     branches:
       - yeon
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{secrets.SSH_KEY}}
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Add SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_HOST_IP }} >> ~/.ssh/known_hosts
 
       - name: Copy project files to EC2
         run: |
-          rsync -avz --exclude '.git' ./ ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project
+          rsync -avz --exclude '.git' ./ ubuntu@${{ secrets.EC2_HOST_IP }}:/home/ubuntu/docker_project
 
       - name: Docker Compose down and rm
         run: |
-          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project "
-          cd /home/ubuntu/docker_project &&
-          docker-compose down &&
-          docker rm $(docker ps -aq)
-          "
+          ssh ubuntu@${{ secrets.EC2_HOST_IP }} "cd /home/ubuntu/docker_project && docker-compose down && docker rm $(docker ps -aq)"
 
       - name: Docker Compose up
         run: |
-          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/unbuntu/docker_project "
-          cd /home/ubuntu/docker_project &&
-          docker-compose up -d --build
-          "
-          
+          ssh ubuntu@${{ secrets.EC2_HOST_IP }} "cd /home/ubuntu/docker_project && docker-compose up -d --build"
