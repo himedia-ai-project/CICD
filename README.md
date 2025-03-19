@@ -1,2 +1,0 @@
-# CICD
-CICD 연습
