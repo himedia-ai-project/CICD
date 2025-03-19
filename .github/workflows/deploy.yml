@@ -4,24 +4,35 @@ on:
   push:
     branches:
       - yeon
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: checkout code
         uses: actions/checkout@v3
 
       - name: Setup SSH
-        uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          username: ubuntu
-          host: ${{ secrets.EC2_HOST_IP }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /home/ubuntu/Docker-compose
-            sudo git pull origin yeon
-            sudo docker-compose down
-            sudo docker-compose up -d --build
+          ssh-private-key: ${{secrets.SSH_KEY}}
+
+      - name: Copy project files to EC2
+        run: |
+          rsync -avz --exclude '.git' ./ ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project
+
+      - name: Docker Compose down and rm
+        run: |
+          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/ubuntu/docker_project "
+          cd /home/ubuntu/docker_project &&
+          docker-compose down &&
+          docker rm $(docker ps -aq)
+          "
+
+      - name: Docker Compose up
+        run: |
+          ssh ubuntu@${{secrets.EC2_HOST_IP}}:/home/unbuntu/docker_project "
+          cd /home/ubuntu/docker_project &&
+          docker-compose up -d --build
+          "
           
