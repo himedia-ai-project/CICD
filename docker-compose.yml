@@ -8,7 +8,7 @@ services:
     ports:
       - 3308:3306
     volumes:
-      - .backend/db/db_data:/var/lib/mysql
+      - ./backend/db/db_data:/var/lib/mysql
     networks:
       - container_network
 
