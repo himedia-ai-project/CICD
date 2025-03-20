@@ -1,13 +1,26 @@
+FROM openjdk:17-jdk-slim as builder
+
+WORKDIR /app
+
+COPY gradlew gradlew
+COPY gradle gradle
+COPY build.gradle build.gradle
+COPY settings.gradle settings.gradle
+
+RUN chmod +x gradlew
+
+RUN ./gradlew --no-daemon dependencies
+
+COPY . .
+
+RUN ./gradlew --no-daemon bootJar
+
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY . .
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar
+EXPOSE 8080
 
-ENV JAR_PATH=/app/build/libs
-RUN mv ${JAR_PATH}/*.jar /app/app.jar
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+ENTRYPOINT ["java", "-jar", "app.jar"]
