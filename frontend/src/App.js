@@ -7,19 +7,19 @@ function App() {
 
     useEffect(() => {
         const fetchCount = async () => {
-            const response = await axios.get("http://localhost:8080/api/count");
+            const response = await axios.get("http://43.202.28.104:8080/api/count");
             setCount(response.data);
         };
         fetchCount();
     }, []);
 
     const handleIncrement = async () => {
-        const response = await axios.post("http://localhost:8080/api/increment");
+        const response = await axios.post("http://43.202.28.104:8080/api/increment");
         setCount(response.data);
     };
 
     const handleDecrement = async () => {
-        const response = await axios.post("http://localhost:8080/api/decrement");
+        const response = await axios.post("http://43.202.28.104:8080/api/decrement");
         setCount(response.data);
     };
 
