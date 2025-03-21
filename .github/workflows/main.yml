@@ -3,10 +3,10 @@ name: Python CI
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 CI 실행
+      - jeongtae  # jeongtae 브랜치에 푸시될 때 CI 실행
   pull_request:
     branches:
-      - main  # main 브랜치로 PR을 보낼 때 CI 실행
+      - jeongtae  # jeongtae 브랜치로 PR을 보낼 때 CI 실행
 
 jobs:
   test:
